@@ -7,20 +7,22 @@ const GRID_STATE = {
   o: "o",
 };
 
+const DEFAULT_GRID = {
+  A1: "-",
+  A2: "-",
+  A3: "-",
+  B1: "-",
+  B2: "-",
+  B3: "-",
+  C1: "-",
+  C2: "-",
+  C3: "-",
+};
+
 function App() {
   const [hasWinner, setHasWinner] = useState(false);
   const [player, setPlayer] = useState(GRID_STATE.x);
-  const [grid, setGrid] = useState({
-    A1: "-",
-    A2: "-",
-    A3: "-",
-    B1: "-",
-    B2: "-",
-    B3: "-",
-    C1: "-",
-    C2: "-",
-    C3: "-",
-  });
+  const [grid, setGrid] = useState(DEFAULT_GRID);
 
   const flipPlayer = () => {
     if (player == GRID_STATE.x) {
@@ -37,7 +39,7 @@ function App() {
       ["A3", "B3", "C3"],
       ["A1", "A2", "A3"],
       ["B1", "B2", "B3"],
-      ["A1", "A2", "A3"],
+      ["C1", "C2", "C3"],
       ["A1", "B2", "C3"],
       ["A3", "B2", "C1"],
     ];
@@ -58,6 +60,9 @@ function App() {
 
   const generateOnClickHandler = (coordinate) => {
     return (e) => {
+      // disable game if winner declared
+      if (hasWinner) return;
+
       // update the set grid state
       const newGrid = { ...grid };
       newGrid[coordinate] = player;
@@ -70,6 +75,12 @@ function App() {
       // flip player
       flipPlayer();
     };
+  };
+
+  const replay = () => {
+    setHasWinner(false);
+    setPlayer(GRID_STATE.x);
+    setGrid(DEFAULT_GRID);
   };
 
   return (
@@ -90,6 +101,8 @@ function App() {
         <span onClick={generateOnClickHandler("B3")}>{grid.B3}</span>
         <span onClick={generateOnClickHandler("C3")}>{grid.C3}</span>
       </div>
+      <div>current turn: {player}</div>
+      <button onClick={() => replay()}>replay</button>
     </div>
   );
 }
